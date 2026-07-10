@@ -556,10 +556,17 @@ namespace
 
 void setup()
 {
-  LittleFS.begin();
-  loadPersistedConfig();
   Serial.begin(SERIAL_BAUD);
   Serial.println();
+
+  if (!LittleFS.begin())
+  {
+    Serial.println(F("LittleFS mount failed, formatting…"));
+    LittleFS.format();
+    LittleFS.begin();
+  }
+
+  loadPersistedConfig();
   Serial.println(F("ESP8266 OTA bootstrap starting"));
   Serial.printf("Listening for remote bytes on GPIO%d at %d baud\n", REMOTE_SIGNAL_RX_PIN, REMOTE_SIGNAL_BAUD);
 
